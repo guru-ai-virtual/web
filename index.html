@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru AI</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('background.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #00ff00;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chat-box {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            margin-bottom: 20px;
+            border: 1px solid #00ff00;
+        }
+
+        .response-area {
+            min-height: 200px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #00ff00;
+            overflow-y: auto;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 50px;
+            font-family: 'Courier New', monospace;
+        }
+
+        textarea::placeholder {
+            color: #008800;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            background-color: #00ff00;
+            color: #000;
+        }
+
+        h1 {
+            color: #00ff00;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="chat-box">
+            <div class="profile-image">
+                <img src="profile.webp" alt="Guru"
+                    style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid #00ff00; margin: 10px auto; display: block;">
+            </div>
+            <h1>Guru AI Basic Terminal</h1>
+            <div class="response-area" id="responseArea">
+                > Initializing system...
+            </div>
+            <div class="input-area">
+                <textarea id="promptInput" placeholder="Enter command..."
+                    onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendPrompt(); }"
+                    class="enabled" disabled></textarea>
+                <button onclick="sendPrompt()" class="enabled" disabled>Execute</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial loading sequence
+        window.onload = function () {
+            const responseArea = document.getElementById('responseArea');
+            const promptInput = document.getElementById('promptInput');
+            const executeButton = document.querySelector('button');
+
+            // Disable input initially
+            promptInput.disabled = true;
+            executeButton.disabled = true;
+
+            const loadingMessages = [
+                { message: "Initializing system modules...", delay: 500 },
+                { message: "Establishing secure connection...", delay: 1000 },
+                { message: "Loading AI components...", delay: 1500 },
+                { message: "Calibrating neural networks...", delay: 2000 },
+                { message: "System successfully loaded and ready for input!<br>", delay: 2500 },
+                { message: `<span style="color: yellow; font-weight: bold"> Guru AI: Hello! How can I assist you today? </span><br>`, delay: 2500 }
+            ];
+
+            let currentDelay = 0;
+            loadingMessages.forEach((item, index) => {
+                setTimeout(() => {
+                    if (index === 0) {
+                        responseArea.innerHTML = `> ${item.message}`;
+                    } else {
+                        responseArea.innerHTML += `<br>> ${item.message}`;
+                    }
+                    responseArea.scrollTop = responseArea.scrollHeight;
+
+                    // Enable input after the last message
+                    if (index === loadingMessages.length - 1) {
+                        promptInput.disabled = false;
+                        executeButton.disabled = false;
+                        promptInput.focus(); // Add focus to input when system is loaded
+                    }
+                }, currentDelay);
+                currentDelay += item.delay;
+            });
+        }
+
+        function sendPrompt() {
+            const promptInput = document.getElementById('promptInput');
+            const responseArea = document.getElementById('responseArea');
+            const prompt = promptInput.value;
+
+            if (prompt.trim() === '') {
+                alert('Please enter a command');
+                return;
+            }
+
+            // Here you would typically make an API call to your AI service
+            // For demonstration, we'll create a terminal-like response
+            const timestamp = new Date().toLocaleTimeString();
+            responseArea.innerHTML += `<br> ${timestamp} USER: <span style="color: white">${prompt}</span><br>`;
+
+            // Add processing message with delay
+            setTimeout(() => {
+                responseArea.innerHTML += `> SYSTEM: Processing request...<br>`;
+                setTimeout(() => {
+                    responseArea.innerHTML += `> <span style="color: yellow; font-weight: bold"> Guru AI: ${cryptoAI.ask(prompt)} </span><br>`;
+                }, 1000);
+            }, 500);
+
+            promptInput.value = ''; // Clear the input
+            responseArea.scrollTop = responseArea.scrollHeight; // Auto-scroll to bottom
+        }
+
+        const cryptoAI = (() => {
+            const keywords = [
+                "Bitcoin", "Ethereum", "blockchain", "cryptocurrency", "decentralized",
+                "DeFi", "NFTs", "mining", "staking", "wallet", "private key", "altcoin",
+                "smart contract", "gas fees", "ledger", "exchange", "liquidity", "HODL",
+                "bull market", "bear market", "metaverse", "btc", "eth", "solana", "bnb", "dogecoin",
+                "cardano", "polkadot", "chainlink", "uniswap", "avalanche", "terra", "tron",
+                "litecoin", "bitcoin cash", "eos", "stellar", "monero", "dash", "zcash",
+                "bitcoin gold", "bitcoin diamond", "bitcoin private", "bitcoin cash abc",
+                "bitcoin sv", "bitcoin abc", "bitcoin black", "bitcoin plus", "bitcoin unlimited",
+                "solana", "cardano", "polkadot", "chainlink", "uniswap", "avalanche", "terra", "tron",
+                "memecoin", "shib", "doge", "ape", "pepe", "meme", "memecoin", "meme", "meme", "meme",
+                "ai", "artificial intelligence", "machine learning", "deep learning", "neural network",
+                "gpt", "llm", "nlp", "chatbot", "voice", "ai", "agent", "chat", "avax"
+            ];
+
+            const responses = [
+                "Bitcoin, being the first cryptocurrency, has established itself as digital gold. It serves as a store of value, and its scarcity with a fixed supply of 21 million coins makes it unique in the financial ecosystem.",
+                "Ethereum is not just a cryptocurrency but a platform for building decentralized applications. Its ability to execute smart contracts has been the cornerstone of innovations like DeFi and NFTs, making it a leader in the blockchain space.",
+                "Blockchain technology underpins cryptocurrencies and ensures that all transactions are secure, transparent, and immutable. It’s not limited to crypto but is also transforming industries like supply chain, healthcare, and finance.",
+                "Decentralized finance (DeFi) aims to create a global financial system that operates without intermediaries. It provides access to lending, borrowing, and trading directly through blockchain platforms, disrupting traditional banking.",
+                "Non-fungible tokens (NFTs) represent unique digital assets that can be bought, sold, and traded on the blockchain. They have revolutionized the art world, gaming, and collectibles, creating a new digital economy.",
+                "Keeping your private key safe is crucial in the crypto space. If someone gains access to your private key, they can control your funds. Always use secure wallets and avoid sharing your key with anyone.",
+                "Gas fees on the Ethereum network can sometimes be prohibitively high, especially during periods of high demand. Layer 2 solutions like Polygon aim to reduce these fees while maintaining the network's security and functionality.",
+                "The term HODL, originally a misspelling of 'hold,' has become a popular mantra in the crypto community. It encourages long-term investment strategies, especially during volatile market conditions.",
+                "Altcoins are cryptocurrencies other than Bitcoin. While they offer diversification and unique use cases, they often come with higher risks. Researching their purpose and development team is key to making informed decisions.",
+                "Staking allows cryptocurrency holders to earn rewards by participating in the network's security and operations. It’s a sustainable way to grow your holdings while supporting the blockchain ecosystem.",
+                "Exchanges are crucial for liquidity but can be targets for hacks. Decentralized exchanges (DEXs) mitigate this by allowing you to trade directly from your wallet.",
+                "Liquidity in crypto ensures smooth trading. Low liquidity can lead to slippage, making it important to trade on well-funded platforms.",
+                "The term HODL encourages investors to stay resilient during market volatility and focus on long-term value rather than short-term price fluctuations.",
+                "Bull markets bring enthusiasm and adoption, but it's crucial to avoid FOMO (Fear of Missing Out) and make informed investment decisions.",
+                "Bear markets test patience but are often seen as opportunities to accumulate assets at lower prices, preparing for the next cycle.",
+                "The metaverse is merging virtual reality with blockchain to create digital worlds where ownership is verifiable and economies are decentralized."
+            ];
+
+            const responseTemplatesWithKeyword = [
+                "You mentioned ${keyword}. ${thought}",
+                "Ah, ${keyword} is a fascinating topic! ${thought}",
+                "Let's talk about ${keyword}. ${thought}",
+                "Great question on ${keyword}! ${thought}"
+            ];
+
+            const responseTemplatesWithoutKeyword = [
+                "That's an interesting question! ${thought}",
+                "Let me share a thought: ${thought}",
+                "Here's something you might find insightful: ${thought}",
+                "Interesting topic! ${thought}"
+            ];
+
+            const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+            const ask = (query) => {
+                // Check for keywords in the query
+                const lowerCaseQuery = query.toLowerCase();
+                const matchingKeyword = keywords.find(keyword =>
+                    lowerCaseQuery.includes(keyword.toLowerCase())
+                );
+
+                var response = getRandom(responses);
+                // Generate a response
+                if (matchingKeyword) {
+                    const template = getRandom(responseTemplatesWithKeyword);
+                    return template.replace("${keyword}", matchingKeyword).replace("${thought}", response);                  
+                } else {
+                    const template = getRandom(responseTemplatesWithoutKeyword);
+                    return template.replace("${thought}", response);
+                }
+            };
+
+            return { ask };
+        })();
+    </script>
+</body>
+
+</html>
